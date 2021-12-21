@@ -119,7 +119,10 @@ class GriduinoFrame(wx.Frame):
         label_griduino_log = wx.StaticText(self.panel_chatter, wx.ID_ANY, "Griduino COM Port:")
         sizer_griduino_log.Add(label_griduino_log, 0, 0, 0)
 
+        # before text_griduino_log 
         self.text_griduino_log = wx.TextCtrl(self.panel_chatter, wx.ID_ANY, "", style=wx.TE_MULTILINE | wx.TE_READONLY)
+        self.text_griduino_log.AppendText("---Start log---\n")
+        # after text_griduino_log 
         sizer_griduino_log.Add(self.text_griduino_log, 1, wx.ALL | wx.EXPAND, 4)
 
         self.panel_chatter.SetSizer(sizer_griduino_log)
