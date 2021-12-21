@@ -10,50 +10,76 @@ import wx
 # end wxGlade
 
 # begin wxGlade: extracode
+import serial
+import serial.tools.list_ports
 # end wxGlade
 
 
 class GriduinoFrame(wx.Frame):
     def __init__(self, *args, **kwds):
         # begin wxGlade: GriduinoFrame.__init__
+        # start frame
         kwds["style"] = kwds.get("style", 0) | wx.DEFAULT_FRAME_STYLE
         wx.Frame.__init__(self, *args, **kwds)
         self.SetSize((500, 300))
         self.SetTitle("GriduinoGUI")
 
         self.notebook_1 = wx.Notebook(self, wx.ID_ANY)
+        # end notebook_1
 
         self.panel_ports = wx.Panel(self.notebook_1, wx.ID_ANY)
         self.notebook_1.AddPage(self.panel_ports, "Port")
 
         sizer_ports = wx.BoxSizer(wx.VERTICAL)
 
-        self.radiobox_port = wx.RadioBox(self.panel_ports, wx.ID_ANY, "Griduino COM port", choices=["port1", "port2", "port3", "port4"], majorDimension=1, style=wx.RA_SPECIFY_COLS)
+        # before radiobox_port
+        self.radiobox_port = wx.RadioBox(self.panel_ports, wx.ID_ANY, "Griduino COM port", choices=["no COM ports available", "unused", "unused", "unused"], majorDimension=1, style=wx.RA_SPECIFY_COLS)
         self.radiobox_port.SetSelection(0)
+        # fill in ports and select current setting
+        preferred_index = 0
+        self.portlist = enumerate(sorted(serial.tools.list_ports.comports()))
+        for n, (portname, desc, hwid) in self.portlist:
+            self.radiobox_port.SetString(n, u'{} - {}'.format(portname, desc))
+        for n in range(self.radiobox_port.GetCount()):
+            if self.radiobox_port.GetString(n) == 'unused':
+                self.radiobox_port.ShowItem(n, False)
+        self.radiobox_port.SetSelection(preferred_index)
+        # after radiobox_port 
         sizer_ports.Add(self.radiobox_port, 0, wx.ALL, 8)
 
+        # start radiobox_udp
         self.radiobox_udp = wx.RadioBox(self.panel_ports, wx.ID_ANY, "WSJT port for UDP", choices=["choice 1"], majorDimension=1, style=wx.RA_SPECIFY_COLS)
+        self.radiobox_udp.Hide()
         self.radiobox_udp.SetSelection(0)
+        # end radiobox_udp
         sizer_ports.Add(self.radiobox_udp, 0, wx.ALL, 8)
 
         self.button_port_ok = wx.Button(self.panel_ports, wx.ID_ANY, "OK")
         sizer_ports.Add(self.button_port_ok, 0, wx.ALL, 8)
 
+        # start panel_gps
         self.panel_gps = wx.Panel(self.notebook_1, wx.ID_ANY)
+        # end panel_gps
         self.notebook_1.AddPage(self.panel_gps, "GPS")
 
         sizer_gps = wx.BoxSizer(wx.VERTICAL)
 
+        # start label_grid6
         label_grid6 = wx.StaticText(self.panel_gps, wx.ID_ANY, "CN87us", style=wx.ALIGN_CENTER_HORIZONTAL)
         label_grid6.SetFont(wx.Font(36, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, 0, ""))
+        # end label_grid6
         sizer_gps.Add(label_grid6, 0, wx.ALL | wx.EXPAND, 13)
 
+        # start label_gmt
         label_gmt = wx.StaticText(self.panel_gps, wx.ID_ANY, "12 : 34 : 56 GMT", style=wx.ALIGN_CENTER_HORIZONTAL)
         label_gmt.SetFont(wx.Font(22, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, 0, ""))
+        # end label_gmt
         sizer_gps.Add(label_gmt, 0, wx.ALIGN_CENTER_HORIZONTAL | wx.ALL, 7)
 
+        # start label_date
         label_date = wx.StaticText(self.panel_gps, wx.ID_ANY, "Dec 20, 2021")
         label_date.SetFont(wx.Font(20, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, 0, ""))
+        # end label_date
         sizer_gps.Add(label_date, 0, wx.ALIGN_CENTER_HORIZONTAL | wx.ALL, 8)
 
         sizer_set_clock = wx.BoxSizer(wx.HORIZONTAL)
@@ -62,13 +88,15 @@ class GriduinoFrame(wx.Frame):
         self.button_plus_time = wx.Button(self.panel_gps, wx.ID_ANY, "Nudge +0.1 sec")
         sizer_set_clock.Add(self.button_plus_time, 0, wx.ALL, 4)
 
-        self.button_set_time = wx.Button(self.panel_gps, wx.ID_ANY, "Set Computer Time from GMT")
+        self.button_set_time = wx.Button(self.panel_gps, wx.ID_ANY, "Set Computer Clock from GPS")
         sizer_set_clock.Add(self.button_set_time, 0, wx.ALL, 4)
 
         self.button_minus_time = wx.Button(self.panel_gps, wx.ID_ANY, "Nudge -0.1 sec")
         sizer_set_clock.Add(self.button_minus_time, 0, wx.ALL, 4)
 
+        # start panel_download
         self.panel_download = wx.Panel(self.notebook_1, wx.ID_ANY)
+        # end panel_download
         self.notebook_1.AddPage(self.panel_download, "Download")
 
         sizer_download = wx.BoxSizer(wx.VERTICAL)
@@ -81,7 +109,9 @@ class GriduinoFrame(wx.Frame):
 
         sizer_download.Add((0, 0), 0, 0, 0)
 
+        # start panel_chatter
         self.panel_chatter = wx.Panel(self.notebook_1, wx.ID_ANY)
+        # end panel chatter
         self.notebook_1.AddPage(self.panel_chatter, "COM Data")
 
         sizer_griduino_log = wx.BoxSizer(wx.VERTICAL)
@@ -101,6 +131,7 @@ class GriduinoFrame(wx.Frame):
         self.panel_ports.SetSizer(sizer_ports)
 
         self.Layout()
+        # end frame
         # end wxGlade
 
 # end of class GriduinoFrame
