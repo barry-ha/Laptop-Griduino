@@ -73,13 +73,19 @@ class GriduinoFrame(wx.Frame):
         # start label_gmt
         label_gmt = wx.StaticText(self.panel_gps, wx.ID_ANY, "12 : 34 : 56 GMT", style=wx.ALIGN_CENTER_HORIZONTAL)
         label_gmt.SetFont(wx.Font(22, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, 0, ""))
+        now = wx.DateTime.Now()
+        now = now.MakeUTC()
+        label_gmt.SetLabel(now.Format('%H : %M : %S GMT'))  # http://www.cplusplus.com/reference/ctime/strftime/
         # end label_gmt
         sizer_gps.Add(label_gmt, 0, wx.ALIGN_CENTER_HORIZONTAL | wx.ALL, 7)
 
         # start label_date
         label_date = wx.StaticText(self.panel_gps, wx.ID_ANY, "Dec 20, 2021")
         label_date.SetFont(wx.Font(20, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, 0, ""))
-        # end label_date
+        now = wx.DateTime.Now()
+        now = now.MakeUTC()
+        label_date.SetLabel(now.Format('%b %e, %Y'))  # http://www.cplusplus.com/reference/ctime/strftime/
+        # after label_date
         sizer_gps.Add(label_date, 0, wx.ALIGN_CENTER_HORIZONTAL | wx.ALL, 8)
 
         sizer_set_clock = wx.BoxSizer(wx.HORIZONTAL)
