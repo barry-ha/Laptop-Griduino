@@ -18,7 +18,7 @@ import serial.tools.list_ports
 class GriduinoFrame(wx.Frame):
     def __init__(self, *args, **kwds):
         # begin wxGlade: GriduinoFrame.__init__
-        # start frame
+        # --- frame ---
         kwds["style"] = kwds.get("style", 0) | wx.DEFAULT_FRAME_STYLE
         wx.Frame.__init__(self, *args, **kwds)
         self.SetSize((500, 300))
@@ -27,6 +27,7 @@ class GriduinoFrame(wx.Frame):
         self.notebook_1 = wx.Notebook(self, wx.ID_ANY)
         # end notebook_1
 
+        # --- panel_ports
         self.panel_ports = wx.Panel(self.notebook_1, wx.ID_ANY)
         self.notebook_1.AddPage(self.panel_ports, "Port")
 
@@ -57,9 +58,8 @@ class GriduinoFrame(wx.Frame):
         self.button_port_ok = wx.Button(self.panel_ports, wx.ID_ANY, "OK")
         sizer_ports.Add(self.button_port_ok, 0, wx.ALL, 8)
 
-        # start panel_gps
+        # --- panel_gps ---
         self.panel_gps = wx.Panel(self.notebook_1, wx.ID_ANY)
-        # end panel_gps
         self.notebook_1.AddPage(self.panel_gps, "GPS")
 
         sizer_gps = wx.BoxSizer(wx.VERTICAL)
@@ -100,9 +100,8 @@ class GriduinoFrame(wx.Frame):
         self.button_minus_time = wx.Button(self.panel_gps, wx.ID_ANY, "Nudge -0.1 sec")
         sizer_set_clock.Add(self.button_minus_time, 0, wx.ALL, 4)
 
-        # start panel_download
+        # --- panel_download ---
         self.panel_download = wx.Panel(self.notebook_1, wx.ID_ANY)
-        # end panel_download
         self.notebook_1.AddPage(self.panel_download, "Download")
 
         sizer_download = wx.BoxSizer(wx.VERTICAL)
@@ -115,9 +114,8 @@ class GriduinoFrame(wx.Frame):
 
         sizer_download.Add((0, 0), 0, 0, 0)
 
-        # start panel_chatter
+        # --- panel_chatter ---
         self.panel_chatter = wx.Panel(self.notebook_1, wx.ID_ANY)
-        # end panel chatter
         self.notebook_1.AddPage(self.panel_chatter, "COM Data")
 
         sizer_griduino_log = wx.BoxSizer(wx.VERTICAL)
@@ -125,10 +123,7 @@ class GriduinoFrame(wx.Frame):
         label_griduino_log = wx.StaticText(self.panel_chatter, wx.ID_ANY, "Griduino COM Port:")
         sizer_griduino_log.Add(label_griduino_log, 0, 0, 0)
 
-        # before text_griduino_log 
         self.text_griduino_log = wx.TextCtrl(self.panel_chatter, wx.ID_ANY, "", style=wx.TE_MULTILINE | wx.TE_READONLY)
-        self.text_griduino_log.AppendText("---Start log---\n")
-        # after text_griduino_log 
         sizer_griduino_log.Add(self.text_griduino_log, 1, wx.ALL | wx.EXPAND, 4)
 
         self.panel_chatter.SetSizer(sizer_griduino_log)
@@ -140,8 +135,12 @@ class GriduinoFrame(wx.Frame):
         self.panel_ports.SetSizer(sizer_ports)
 
         self.Layout()
-        # end frame
+
+        self.Bind(wx.EVT_BUTTON, self.OnPortOkButton, self.button_port_ok)
         # end wxGlade
+
+    def OnPortOkButton(self, event):  # wxGlade: GriduinoFrame.<event_handler>
+        self.notebook_1.SetSelection(1)
 
 # end of class GriduinoFrame
 
