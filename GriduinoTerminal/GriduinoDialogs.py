@@ -123,11 +123,9 @@ class GriduinoFrame(wx.Frame):
 
         # --- button_download_barometer
         label_1 = wx.StaticText(self.panel_download, wx.ID_ANY, "Barometer 3-day history:")
-        label_1.Hide()
         sizer_2.Add(label_1, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALL, 0)
 
         self.button_download_barometer = wx.Button(self.panel_download, wx.ID_ANY, "Save Barometer As...")
-        self.button_download_barometer.Hide()
         sizer_2.Add(self.button_download_barometer, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALL, 8)
 
         # --- panel_chatter ---
@@ -183,26 +181,25 @@ class GriduinoFrame(wx.Frame):
 
     def OnPortOkButton(self, event):  # wxGlade: GriduinoFrame.<event_handler>
         # when user clicks OK on the port selection, start showing the GPS window
-        self.notebook_1.SetSelection(1)
+        print("GriduinoDialogs: event button_port_ok")
+        event.Skip()
 
     def OnClearOutput(self, event):  # wxGlade: GriduinoFrame.<event_handler>
+        print("GriduinoDialogs: OnClearOutput() not implemented")
         self.text_griduino_log.Clear()
         # self.text_griduino_log.AppendText("---Start log---\n")
 
     def OnCheckboxAutoscroll(self, event):  # wxGlade: GriduinoFrame.<event_handler>
         # todo: find a way to stop autoscroll
-        print("GriduinoDialogs: Event handler 'OnCheckboxAutoscroll' not implemented!")
+        print("GriduinoDialogs: OnCheckboxAutoscroll() not implemented")
         event.Skip()
 
     def OnButtonSaveKML(self, event):  # wxGlade: GriduinoFrame.<event_handler>
         # nothing - the main program has the event handler using e.g.
         # self.Bind(wx.EVT_BUTTON, self.DoButtonSaveKML, self.frame.button_download_gps)
+        print("GriduinoDialogs: OnButtonSaveKML() not implemented")
         event.Skip()
 
-    def OnHiMom(self, event):  # wxGlade: GriduinoFrame.<event_handler>
-        # nothing - the main program has the event handler using e.g.
-        # self.Bind(wx.EVT_BUTTON, self.DoHiMom, self.frame.button_hi_mom)
-        event.Skip()
 # end of class GriduinoFrame
 
 
