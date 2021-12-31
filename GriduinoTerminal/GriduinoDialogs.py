@@ -24,8 +24,8 @@ class GriduinoFrame(wx.Frame):
         self.SetSize((500, 300))
         self.SetTitle("GriduinoGUI")
 
+        # --- notebook_1
         self.notebook_1 = wx.Notebook(self, wx.ID_ANY)
-        # end notebook_1
 
         # --- panel_ports
         self.panel_ports = wx.Panel(self.notebook_1, wx.ID_ANY)
@@ -109,8 +109,9 @@ class GriduinoFrame(wx.Frame):
         sizer_download = wx.BoxSizer(wx.VERTICAL)
 
         sizer_3 = wx.BoxSizer(wx.HORIZONTAL)
-        sizer_download.Add(sizer_3, 0, wx.EXPAND, 0)
+        sizer_download.Add(sizer_3, 0, wx.ALL | wx.EXPAND, 8)
 
+        # --- button_download_gps
         label_2 = wx.StaticText(self.panel_download, wx.ID_ANY, "GPS bread crumb trail:")
         sizer_3.Add(label_2, 0, wx.ALIGN_CENTER_VERTICAL, 0)
 
@@ -118,18 +119,16 @@ class GriduinoFrame(wx.Frame):
         sizer_3.Add(self.button_download_gps, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALL, 8)
 
         sizer_2 = wx.BoxSizer(wx.HORIZONTAL)
-        sizer_download.Add(sizer_2, 0, wx.EXPAND, 0)
+        sizer_download.Add(sizer_2, 0, wx.ALL | wx.EXPAND, 8)
 
+        # --- button_download_barometer
         label_1 = wx.StaticText(self.panel_download, wx.ID_ANY, "Barometer 3-day history:")
-        sizer_2.Add(label_1, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        label_1.Hide()
+        sizer_2.Add(label_1, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALL, 0)
 
         self.button_download_barometer = wx.Button(self.panel_download, wx.ID_ANY, "Save Barometer As...")
+        self.button_download_barometer.Hide()
         sizer_2.Add(self.button_download_barometer, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALL, 8)
-
-        sizer_4 = wx.BoxSizer(wx.HORIZONTAL)
-        sizer_download.Add(sizer_4, 1, wx.EXPAND, 0)
-
-        sizer_4.Add((0, 0), 0, 0, 0)
 
         # --- panel_chatter ---
         self.panel_chatter = wx.Panel(self.notebook_1, wx.ID_ANY)
@@ -177,6 +176,7 @@ class GriduinoFrame(wx.Frame):
         self.Layout()
 
         self.Bind(wx.EVT_BUTTON, self.OnPortOkButton, self.button_port_ok)
+        self.Bind(wx.EVT_BUTTON, self.OnButtonSaveKML, self.button_download_gps)
         self.Bind(wx.EVT_CHECKBOX, self.OnCheckboxAutoscroll, self.checkbox_autoscroll)
         self.Bind(wx.EVT_BUTTON, self.OnClearOutput, self.button_clear_log)
         # end wxGlade
@@ -187,12 +187,21 @@ class GriduinoFrame(wx.Frame):
 
     def OnClearOutput(self, event):  # wxGlade: GriduinoFrame.<event_handler>
         self.text_griduino_log.Clear()
-        #self.text_griduino_log.AppendText("---Start log---\n")
-
+        # self.text_griduino_log.AppendText("---Start log---\n")
 
     def OnCheckboxAutoscroll(self, event):  # wxGlade: GriduinoFrame.<event_handler>
         # todo: find a way to stop autoscroll
-        print("Event handler 'OnCheckboxAutoscroll' not implemented!")
+        print("GriduinoDialogs: Event handler 'OnCheckboxAutoscroll' not implemented!")
+        event.Skip()
+
+    def OnButtonSaveKML(self, event):  # wxGlade: GriduinoFrame.<event_handler>
+        # nothing - the main program has the event handler using e.g.
+        # self.Bind(wx.EVT_BUTTON, self.DoButtonSaveKML, self.frame.button_download_gps)
+        event.Skip()
+
+    def OnHiMom(self, event):  # wxGlade: GriduinoFrame.<event_handler>
+        # nothing - the main program has the event handler using e.g.
+        # self.Bind(wx.EVT_BUTTON, self.DoHiMom, self.frame.button_hi_mom)
         event.Skip()
 # end of class GriduinoFrame
 

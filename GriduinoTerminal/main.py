@@ -27,6 +27,8 @@ class thisApp(wx.App):
         self.Bind(wx.EVT_TIMER, self.timertick, self.timer)
         self.timer.Start(2000)
 
+        self.Bind(wx.EVT_BUTTON, self.DoButtonSaveKML, self.frame.button_download_gps)
+
         self.SetTopWindow(self.frame)
         self.frame.Show()
         return True
@@ -38,6 +40,9 @@ class thisApp(wx.App):
     def timertick(self, event):
         self.frame.text_griduino_log.AppendText(time.ctime() + "\n")
 
+    def DoButtonSaveKML(self, event):
+        print("main.py - received event button_download_gps")
+
 
 # end of class MyApp
 
@@ -46,3 +51,6 @@ if __name__ == "__main__":
     # Create a new app, don't redirect stdout/stderr to a window.
     app = thisApp(False)
     app.MainLoop()
+    #input("Press enter to exit")
+    #import os
+    #os.system("pause")
