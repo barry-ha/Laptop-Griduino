@@ -30,7 +30,7 @@ class thisApp(wx.App):
 
         self.Bind(wx.EVT_BUTTON, self.DoPortOkButton, self.frame.button_port_ok)
         self.Bind(wx.EVT_BUTTON, self.DoButtonSaveKML, self.frame.button_download_gps)
-        #mySerial = serial.Serial()
+        self.Bind(wx.EVT_BUTTON, self.DoButtonSendText, self.frame.button_send_text)
 
         self.SetTopWindow(self.frame)
         self.frame.Show()
@@ -88,6 +88,14 @@ class thisApp(wx.App):
     def DoButtonSaveKML(self, event):
         print("main.py - event button_download_gps")
 
+    def DoButtonSendText(self, event):
+        print("main.py - event button_send_text")
+        if (self.mySerial.is_open):
+            text = self.frame.text_griduino_send.GetValue().encode("utf-8")
+            self.mySerial.write(text)
+            self.frame.text_griduino_send.SetValue('')
+
+      
     #def ParseTime(self,isotime):
         # From: https://docs.python.org/3/library/datetime.html#datetime.datetime 
         #

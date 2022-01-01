@@ -149,6 +149,7 @@ class GriduinoFrame(wx.Frame):
         sizer_7.Add(self.text_griduino_send, 1, wx.ALL, 4)
 
         self.button_send_text = wx.Button(self.panel_chatter, wx.ID_ANY, "Send")
+        self.button_send_text.SetDefault()
         sizer_7.Add(self.button_send_text, 0, wx.ALL, 4)
 
         sizer_6 = wx.BoxSizer(wx.HORIZONTAL)
