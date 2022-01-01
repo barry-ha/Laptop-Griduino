@@ -26,7 +26,7 @@ class thisApp(wx.App):
 
         self.timer = wx.Timer(self, id=TIMER_ID)
         self.Bind(wx.EVT_TIMER, self.timertick, self.timer)
-        self.timer.Start(2000)
+        self.timer.Start(100)
 
         self.Bind(wx.EVT_BUTTON, self.DoPortOkButton, self.frame.button_port_ok)
         self.Bind(wx.EVT_BUTTON, self.DoButtonSaveKML, self.frame.button_download_gps)
@@ -41,7 +41,14 @@ class thisApp(wx.App):
         self.frame.text_griduino_log.AppendText("---Start log---\n")
 
     def timertick(self, event):
-        self.frame.text_griduino_log.AppendText(time.ctime() + "\n")
+        #self.frame.text_griduino_log.AppendText(time.ctime() + "\n")
+        if (self.mySerial.is_open):
+          while True:
+            data = self.mySerial.readline().decode("utf-8")
+            if (data == ''):
+              break 
+            else:
+              self.frame.text_griduino_log.AppendText(data)
 
     def DoPortOkButton(self, event):
         print("main.py - event button_port_ok")
@@ -50,30 +57,32 @@ class thisApp(wx.App):
         # read user's selection from dialog
         offset = self.frame.radiobox_port.GetSelection()
         count = self.frame.radiobox_port.GetCount()
-        port = self.frame.radiobox_port.GetItemLabel(offset).split()[0]
+        fullportname = self.frame.radiobox_port.GetItemLabel(offset)
+        port = fullportname.split()[0]    # first word of the long port name e.g. "COM17"
 
         self.mySerial.close()
         self.mySerial.baudrate = 115200
-        self.mySerial.port = port     # also test error handling with port name "bogus"
+        self.mySerial.timeout = 0     # non-blocking read
+        self.mySerial.port = port     # be sure to test error handling with port name "bogus"
         try:
-            # opens in binary (not text) mode
-            self.mySerial.open()
-            # check which port was really opened
-            print('Connected to port: ' + self.mySerial.name)
-            self.frame.notebook_1.SetSelection(1)  # success! switch to new tab in notebook
+            self.mySerial.open()      # opens in binary (not text) mode
+            print('Connected to port: ' + self.mySerial.name) # check which port was really opened
+            self.frame.notebook_1.SetSelection(1)  # switch to new tab in notebook
+            self.frame.frame_statusbar.SetStatusText("Running", 0)  # update status
+            self.frame.frame_statusbar.SetStatusText(fullportname, 1)
         except:
             import sys
-            (type, value, tb) = sys.exc_info()
-            print(type)     # <class 'serial.serialutil.SerialException'>
-            print(value)    # could not open port 'bogus': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2)
-            print(tb)       # <traceback object at 0x0000015A5FEE68C0>
+            (exctype, value, tb) = sys.exc_info()
+            print(exctype)      # <class 'serial.serialutil.SerialException'>
+            print(type(value))  # <class 'serial.serialutil.SerialException'>
+            print(value)        # could not open port 'bogus': FileNotFoundError(2, 'The system cannot find the file specified.', None, 2)
+            print(tb)           # <traceback object at 0x0000015A5FEE68C0>
             wx.MessageDialog(
               None,   #parent
               "Unable to open port '{0}'\n\n{1}".format(self.mySerial.name, value),
               self.frame.GetTitle(),   # message box has same window title as the UI
               wx.OK_DEFAULT + wx.ICON_INFORMATION
             ).ShowModal()
-        # todo - remember the selected port, to be used in all of our pySerial operations
 
 
     def DoButtonSaveKML(self, event):
@@ -100,6 +109,3 @@ if __name__ == "__main__":
     # Create a new app, don't redirect stdout/stderr to a window.
     app = thisApp(False)
     app.MainLoop()
-    #input("Press enter to exit")
-    #import os
-    #os.system("pause")

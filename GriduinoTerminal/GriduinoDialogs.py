@@ -12,6 +12,7 @@ import wx
 # begin wxGlade: extracode
 import serial
 import serial.tools.list_ports
+# --- frame_statusbar
 # end wxGlade
 
 
@@ -21,8 +22,15 @@ class GriduinoFrame(wx.Frame):
         # --- frame ---
         kwds["style"] = kwds.get("style", 0) | wx.DEFAULT_FRAME_STYLE
         wx.Frame.__init__(self, *args, **kwds)
-        self.SetSize((500, 300))
+        self.SetSize((500, 320))
         self.SetTitle("GriduinoGUI")
+
+        self.frame_statusbar = self.CreateStatusBar(2)
+        self.frame_statusbar.SetStatusWidths([-1, -2])
+        # statusbar fields
+        frame_statusbar_fields = ["Stopped", "Waiting for COM port"]
+        for i in range(len(frame_statusbar_fields)):
+            self.frame_statusbar.SetStatusText(frame_statusbar_fields[i], i)
 
         # --- notebook_1
         self.notebook_1 = wx.Notebook(self, wx.ID_ANY)
@@ -151,9 +159,6 @@ class GriduinoFrame(wx.Frame):
 
         sizer_8 = wx.BoxSizer(wx.HORIZONTAL)
         sizer_griduino_log.Add(sizer_8, 0, wx.EXPAND, 0)
-
-        label_3 = wx.StaticText(self.panel_chatter, wx.ID_ANY, "Griduino COM Port")
-        sizer_8.Add(label_3, 1, wx.ALIGN_CENTER_VERTICAL | wx.ALL, 4)
 
         self.checkbox_autoscroll = wx.CheckBox(self.panel_chatter, wx.ID_ANY, "Autoscroll")
         self.checkbox_autoscroll.SetValue(1)
