@@ -4,11 +4,13 @@
 # https://docs.python-guide.org/
 
 # system imports
-import time
+#import time
 
 # pip install imports
 import wx       # pip install -U wxPython
 import serial   # pip install -U pySerial
+#from dateutil.parser import *     # pip install python-dateutil
+#import calendar 
 
 # project/local imports
 import GriduinoDialogs
@@ -45,10 +47,11 @@ class thisApp(wx.App):
         if (self.mySerial.is_open):
           while True:
             data = self.mySerial.readline().decode("utf-8")
-            if (data == ''):
-              break 
-            else:
+            if (data != ''):
               self.frame.text_griduino_log.AppendText(data)
+              self.DoUpdateClockDialog(data)
+            else:
+              break 
 
     def DoPortOkButton(self, event):
         print("main.py - event button_port_ok")
@@ -84,7 +87,6 @@ class thisApp(wx.App):
               wx.OK_DEFAULT + wx.ICON_INFORMATION
             ).ShowModal()
 
-
     def DoButtonSaveKML(self, event):
         print("main.py - event button_download_gps")
 
@@ -95,19 +97,44 @@ class thisApp(wx.App):
             self.mySerial.write(text)
             self.frame.text_griduino_send.SetValue('')
 
-      
-    #def ParseTime(self,isotime):
+    def DoUpdateClockDialog(self,data):
         # From: https://docs.python.org/3/library/datetime.html#datetime.datetime 
         #
         # classmethod datetime.fromisoformat(date_string)
         # Return a datetime corresponding to a date_string in one of the 
         # formats emitted by date.isoformat() and datetime.isoformat().
         # Specifically, this function supports strings in the format:
-        # YYYY-MM-DD[*HH[:MM[:SS[.fff[fff]]]][+HH:MM[:SS[.ffffff]]]]
+        #       YYYY-MM-DD[*HH[:MM[:SS[.fff[fff]]]][+HH:MM[:SS[.ffffff]]]]
         #
-        # Therefore, we will make Griduino produce ISO date/time format strings
+        # From: https://www.progress.com/blogs/understanding-iso-8601-date-and-time-format 
+        # We made Griduino produce ISO 8601 date/time format strings:
+        #       2022-01-01 21:49:49+00:00
         #
-        #print("ParseTime(" + isotime + ")")
+        # Better yet, wxPython has all the date/time parsing and formatting functions needed
+        # From: https://wxpython.org/Phoenix/docs/html/wx.DateTime.html#wx.DateTime.ParseISOCombined 
+        #
+        if (len(data) == 27):           # don't understand why len("2022-01-01 22:11:00+00:00") == 27
+            #print("Possible ISO date: {0} ({1} bytes)".format(data, len(data)))
+            # although module time provides strptime() function to parse text into timestamps,
+            # it reportedly has subtle bugs so we use dateutil library instead
+            # Stack overflow: https://stackoverflow.com/questions/969285/how-do-i-translate-an-iso-8601-datetime-string-into-a-python-datetime-object 
+            # Replacement:    https://pypi.org/project/python-dateutil/ 
+            # Code on GitHub: https://github.com/dateutil/dateutil/
+            
+            #now = parse("Sat Oct 11 17:13:46 UTC 2003")
+            now = wx.DateTime
+            rc = now.ParseISOCombined(data, " ") # exception: first argument must be DateTime object
+            
+            #datetime.fromisoformat()
+            if (rc):
+                showdate = "{0} {1}, {2}".format(now.GetMonth(wx.DateTime.UTC), now.GetDay(wx.DateTime.UTC), now.GetYear(wx.DateTime.UTC))
+                showtime = "{0} : {1} : {2} GMT".format(now.GetHour(wx.DateTime.UTC), now.GetMinute(wx.DateTime.UTC), now.GetSecond(wx.DateTime.UTC))
+                print("Griduino datestamp: %s" % showdate)
+                print("Griduino timestamp: %s\n" % showtime)
+                self.frame.label_gmt.SetLabel(showtime)
+                self.frame.label_date.SetLabel(showdate)
+            else:
+                print("Did not parse date/time from: {}".format(data))
 
 
 # end of class MyApp

@@ -77,26 +77,26 @@ class GriduinoFrame(wx.Frame):
         sizer_gps = wx.BoxSizer(wx.VERTICAL)
 
         # --- label_grid6
-        label_grid6 = wx.StaticText(self.panel_gps, wx.ID_ANY, "CN87us", style=wx.ALIGN_CENTER_HORIZONTAL)
-        label_grid6.SetFont(wx.Font(36, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, 0, ""))
-        sizer_gps.Add(label_grid6, 0, wx.ALL | wx.EXPAND, 13)
+        self.label_grid6 = wx.StaticText(self.panel_gps, wx.ID_ANY, "CN87us", style=wx.ALIGN_CENTER_HORIZONTAL)
+        self.label_grid6.SetFont(wx.Font(36, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, 0, ""))
+        sizer_gps.Add(self.label_grid6, 0, wx.ALL | wx.EXPAND, 13)
 
         # --- label_gmt
-        label_gmt = wx.StaticText(self.panel_gps, wx.ID_ANY, "12 : 34 : 56 GMT", style=wx.ALIGN_CENTER_HORIZONTAL)
-        label_gmt.SetFont(wx.Font(22, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, 0, ""))
+        self.label_gmt = wx.StaticText(self.panel_gps, wx.ID_ANY, "12 : 34 : 56 GMT", style=wx.ALIGN_CENTER_HORIZONTAL)
+        self.label_gmt.SetFont(wx.Font(22, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, 0, ""))
         now = wx.DateTime.Now()
         now = now.MakeUTC()
-        label_gmt.SetLabel(now.Format('%H : %M : %S GMT'))  # http://www.cplusplus.com/reference/ctime/strftime/
+        self.label_gmt.SetLabel(now.Format('%H : %M : %S GMT'))  # http://www.cplusplus.com/reference/ctime/strftime/
         # end label_gmt
-        sizer_gps.Add(label_gmt, 0, wx.ALIGN_CENTER_HORIZONTAL | wx.ALL, 7)
+        sizer_gps.Add(self.label_gmt, 0, wx.ALIGN_CENTER_HORIZONTAL | wx.ALL, 7)
 
         # --- label_date
-        label_date = wx.StaticText(self.panel_gps, wx.ID_ANY, "Dec 20, 2021")
-        label_date.SetFont(wx.Font(20, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, 0, ""))
+        self.label_date = wx.StaticText(self.panel_gps, wx.ID_ANY, "Dec 20, 2021")
+        self.label_date.SetFont(wx.Font(20, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, 0, ""))
         now = wx.DateTime.Now()
         now = now.MakeUTC()
-        label_date.SetLabel(now.Format('%b %e, %Y'))  # http://www.cplusplus.com/reference/ctime/strftime/
-        sizer_gps.Add(label_date, 0, wx.ALIGN_CENTER_HORIZONTAL | wx.ALL, 8)
+        self.label_date.SetLabel(now.Format('%b %e, %Y'))  # http://www.cplusplus.com/reference/ctime/strftime/
+        sizer_gps.Add(self.label_date, 0, wx.ALIGN_CENTER_HORIZONTAL | wx.ALL, 8)
 
         sizer_set_clock = wx.BoxSizer(wx.HORIZONTAL)
         sizer_gps.Add(sizer_set_clock, 1, wx.ALL | wx.EXPAND, 4)
