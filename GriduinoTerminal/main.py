@@ -27,7 +27,7 @@ class thisApp(wx.App):
         self.clearTextLog()
 
         self.timer = wx.Timer(self, id=TIMER_ID)
-        self.Bind(wx.EVT_TIMER, self.timertick, self.timer)
+        self.Bind(wx.EVT_TIMER, self.timerTick, self.timer)
         self.timer.Start(100)
 
         self.Bind(wx.EVT_BUTTON, self.DoPortOkButton, self.frame.button_port_ok)
@@ -42,10 +42,10 @@ class thisApp(wx.App):
         self.frame.text_griduino_log.Clear()
         self.frame.text_griduino_log.AppendText("---Start log---\n")
 
-    def timertick(self, event):
+    def timerTick(self, event):
         #self.frame.text_griduino_log.AppendText(time.ctime() + "\n")
         if (self.mySerial.is_open):
-          while True:
+          while True:     # read from USB until data is exhausted
             data = self.mySerial.readline().decode("utf-8")
             if (data != ''):
               self.frame.text_griduino_log.AppendText(data)
@@ -96,6 +96,18 @@ class thisApp(wx.App):
             text = self.frame.text_griduino_send.GetValue().encode("utf-8")
             self.mySerial.write(text)
             self.frame.text_griduino_send.SetValue('')
+        return
+
+    def isDateFormatISO(self, data):
+        # input: data = string similar to "2022-03-02 12:34:56+00:00"
+        # First filter to recognize GMT time is string length
+        if (len(data) == 27):          # 27 == len("2022-01-01 22:11:00+00:00\r\n")
+            #looks okay so far
+            #if (data[4] == '-')
+            #    if (data[7] == '-')
+            return True     # indicate IS a valid ISO date
+        else:
+            return False    # indicate NOT an ISO date
 
     def DoUpdateClockDialog(self,data):
         # From: https://docs.python.org/3/library/datetime.html#datetime.datetime 
@@ -113,7 +125,7 @@ class thisApp(wx.App):
         # Better yet, wxPython has all the date/time parsing and formatting functions needed
         # From: https://wxpython.org/Phoenix/docs/html/wx.DateTime.html#wx.DateTime.ParseISOCombined 
         #
-        if (len(data) == 27):           # don't understand why len("2022-01-01 22:11:00+00:00") == 27
+        if (self.isDateFormatISO(data)):
             #print("Possible ISO date: {0} ({1} bytes)".format(data, len(data)))
             # although module time provides strptime() function to parse text into timestamps,
             # it reportedly has subtle bugs so we use dateutil library instead
@@ -122,20 +134,26 @@ class thisApp(wx.App):
             # Code on GitHub: https://github.com/dateutil/dateutil/
             
             #now = parse("Sat Oct 11 17:13:46 UTC 2003")
-            now = wx.DateTime
-            rc = now.ParseISOCombined(data, " ") # exception: first argument must be DateTime object
+            #now = parse("2022-03-02 23:23:04+00:00")
+            #now = wx.DateTime.ParseISOCombined(data, " ") # exception: first argument must be DateTime object
             
             #datetime.fromisoformat()
-            if (rc):
-                showdate = "{0} {1}, {2}".format(now.GetMonth(wx.DateTime.UTC), now.GetDay(wx.DateTime.UTC), now.GetYear(wx.DateTime.UTC))
-                showtime = "{0} : {1} : {2} GMT".format(now.GetHour(wx.DateTime.UTC), now.GetMinute(wx.DateTime.UTC), now.GetSecond(wx.DateTime.UTC))
-                print("Griduino datestamp: %s" % showdate)
-                print("Griduino timestamp: %s\n" % showtime)
+            #if (rc):
+            if (True):
+                #showDate = "{0} {1}, {2}".format(now.GetMonth(wx.DateTime.UTC), now.GetDay(wx.DateTime.UTC), now.GetYear(wx.DateTime.UTC))
+                #showtime = "{0} : {1} : {2} GMT".format(now.GetHour(wx.DateTime.UTC), now.GetMinute(wx.DateTime.UTC), now.GetSecond(wx.DateTime.UTC))
+                #print("Griduino date stamp: %s" % showDate)
+                #print("Griduino time stamp: %s\n" % showtime)
+
+                now = wx.DateTime.Now()                     # temp debug
+                now = now.MakeUTC()                         # temp debug
+                showtime = now.Format('%H : %M : %S GMT')   # temp debug http://www.cplusplus.com/reference/ctime/strftime/
+                showDate = now.Format('%b %e, %Y')          # temp debug http://www.cplusplus.com/reference/ctime/strftime/
+
                 self.frame.label_gmt.SetLabel(showtime)
-                self.frame.label_date.SetLabel(showdate)
+                self.frame.label_date.SetLabel(showDate)
             else:
                 print("Did not parse date/time from: {}".format(data))
-
 
 # end of class MyApp
 
