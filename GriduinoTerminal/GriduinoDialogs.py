@@ -57,18 +57,22 @@ class GriduinoFrame(wx.Frame):
         sizer_ports.Add(self.radiobox_port, 0, wx.ALL, 8)
 
         # --- radiobox_udp
-        self.radiobox_udp = wx.RadioBox(self.panel_ports, wx.ID_ANY, "WSJT port for UDP", choices=["choice 1"], majorDimension=1, style=wx.RA_SPECIFY_COLS)
-        self.radiobox_udp.Hide()
+        self.radiobox_udp = wx.RadioBox(self.panel_ports, wx.ID_ANY, "WSJT port UDP multicast", choices=["choice 1"], majorDimension=1, style=wx.RA_SPECIFY_COLS)
         self.radiobox_udp.SetSelection(0)
         sizer_ports.Add(self.radiobox_udp, 0, wx.ALL, 8)
 
+        self.choice_1 = wx.Choice(self.panel_ports, wx.ID_ANY, choices=["choice 1"])
+        self.choice_1.SetSelection(0)
+        sizer_ports.Add(self.choice_1, 0, 0, 0)
+
+        self.text_ctrl_1 = wx.TextCtrl(self.panel_ports, wx.ID_ANY, "")
+        sizer_ports.Add(self.text_ctrl_1, 0, 0, 0)
+
+        self.text_ctrl_2 = wx.TextCtrl(self.panel_ports, wx.ID_ANY, "")
+        sizer_ports.Add(self.text_ctrl_2, 0, 0, 0)
+
         self.button_port_ok = wx.Button(self.panel_ports, wx.ID_ANY, "OK")
         sizer_ports.Add(self.button_port_ok, 0, wx.ALL, 8)
-
-        sizer_1 = wx.BoxSizer(wx.HORIZONTAL)
-        sizer_ports.Add(sizer_1, 1, wx.EXPAND, 0)
-
-        sizer_1.Add((0, 0), 0, 0, 0)
 
         # --- panel_gps ---
         self.panel_gps = wx.Panel(self.notebook_1, wx.ID_ANY)
@@ -179,10 +183,10 @@ class GriduinoFrame(wx.Frame):
 
         self.Layout()
 
-        self.Bind(wx.EVT_BUTTON, self.OnPortOkButton, self.button_port_ok)
-        self.Bind(wx.EVT_BUTTON, self.OnButtonSaveKML, self.button_download_gps)
-        self.Bind(wx.EVT_CHECKBOX, self.OnCheckboxAutoscroll, self.checkbox_autoscroll)
-        self.Bind(wx.EVT_BUTTON, self.OnClearOutput, self.button_clear_log)
+        self.button_port_ok.Bind(wx.EVT_BUTTON, self.OnPortOkButton)
+        self.button_download_gps.Bind(wx.EVT_BUTTON, self.OnButtonSaveKML)
+        self.checkbox_autoscroll.Bind(wx.EVT_CHECKBOX, self.OnCheckboxAutoscroll)
+        self.button_clear_log.Bind(wx.EVT_BUTTON, self.OnClearOutput)
         # end wxGlade
 
     def OnPortOkButton(self, event):  # wxGlade: GriduinoFrame.<event_handler>
